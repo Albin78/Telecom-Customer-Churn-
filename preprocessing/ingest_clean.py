@@ -21,12 +21,20 @@ class CleanData:
     """Clean the Data"""
 
     def __init__(self, data: pd.DataFrame):
-        """Initialize the CleanData class"""
+        """
+        Initialize the CleanData class
+        
+        Args:
+            data (pd.DataFrame): the dataset for cleaning
+            """
 
         self.data = data
 
     def clean_data(self) -> pd.DataFrame:
-        """Clean the Data"""
+        """
+        Clean the Data
+        
+        """
 
         try:
             

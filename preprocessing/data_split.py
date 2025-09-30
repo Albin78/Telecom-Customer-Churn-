@@ -7,11 +7,19 @@ import pandas as pd
 
 
 class DataSplit(ABC):
-    """Abstract class for data splitting"""
+    """
+    Abstract class for data splitting
+    
+    """
 
     @abstractmethod
     def split_data(self, data: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
-        """Split the data"""
+        """
+        Abstractmethod for Split the data
+        
+        Args:
+            data (pd.DataFrame): the input data to split on
+        """
         pass
 
 
@@ -19,7 +27,17 @@ class DataSplit(DataSplit):
     """Class for data splitting"""
 
     def split_data(self, data: pd.DataFrame) -> Union[pd.DataFrame, pd.Series]:
-        """Split the data inot train validation and test sets"""
+        """
+        Split the data into train validation and test sets
+        
+        Args:
+            data (pd.DataFrame): The input data ingested for splitting
+            
+        Returns:
+            Union[pd.DatFrame, pd.Series]: The train, validation and test splits 
+            of both label and target
+            
+            """
 
         try:
 
