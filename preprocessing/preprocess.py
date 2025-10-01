@@ -78,38 +78,34 @@ class PreprocessSetup:
         """
         
         try:
-            
+
+            preprocessor = self.preprocess()
+
             if model_type == 'lr':
 
-                preprocessor = self.preprocess()
-                pipeline = Pipeline([
-                    ('preprocessor', preprocessor),
-                    ('lr', LogisticRegression(solver="saga", penalty="l2", max_iter=1000,
-                    class_weight='balanced', random_state=42))
-                ])
+                estimator = LogisticRegression(solver="saga", penalty="l2", max_iter=1000,
+                                               random_state=42, class_weight='balanced')
+                
 
             elif model_type == 'lr_unbalanced':
 
-                pipeline = Pipeline([
-                    ('preprocessor', preprocessor),
-                    ('lr', LogisticRegression(solver="saga", penalty="l2", max_iter=1000,
-                    random_state=42))
-                ])
+                estimator = LogisticRegression(solver="saga", penalty="l2", max_iter=1000,
+                                               random_state=42)
 
             elif model_type == 'rf':
 
-                pipeline = Pipeline([
-                    ('preprocessor', preprocessor),
-                    ('rf', RandomForestClassifier(random_state=42, class_weight='balanced'))
-                ])
+                estimator = RandomForestClassifier(random_state=42, class_weight='balanced')
 
             elif model_type == 'rf_unbalanced':
 
-                pipeline = Pipeline[(
-                    ('preprocessor', preprocessor),
-                    ('rf', RandomForestClassifier(random_state=42))
-                )]
+                estimator = RandomForestClassifier(random_state=42)
 
+            
+            pipeline = Pipeline([
+                    ("preprocessor", preprocessor),
+                    ("model", estimator)
+                ])
+                
             return pipeline
         
         except Exception as e:
