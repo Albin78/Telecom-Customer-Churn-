@@ -1,8 +1,10 @@
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
 import pandas as pd
-import numpy as np
+
 
 class PreprocessSetup:
     """Setup the preprocessing pipeline for the  data"""
@@ -25,15 +27,13 @@ class PreprocessSetup:
         self.data = data
         self.numeric_features = numeric_features
         self.cat_bin_features = cat_bin_features
-        self.preprocessor = None
 
-    def preprocess(self, model_type: str):
+
+    def preprocess(self):
 
         """
         Handles preprocessing pipelines and composing into a single Transformer
 
-        Args:
-            model_type (str): The type of model to preprocess for
         
         Returns:
             self.preprocessor (ColumnTransformer): The preprocessor pipeline
@@ -51,28 +51,71 @@ class PreprocessSetup:
                     ('OHE', OneHotEncoder(drop='first', handle_unknown='ignore'))
                 ])
                                     
-            
-            if model_type == "lr":
 
-                self.preprocessor = ColumnTransformer(
-                    transformers=[
-                        ('num', numeric_transformer, self.numeric_features),
-                        ('cat', cat_bin_transformer, self.cat_bin_features)
-                    ])
-
-            elif model_type == "tree":
-
-                self.preprocessor = ColumnTransformer(
-                    transformers=[
-                        ('num', 'passthrough', self.numeric_features),
-                        ('cat', cat_bin_transformer, self.cat_bin_features)
+            preprocessor = ColumnTransformer(
+                transformers=[
+                    ('num', numeric_transformer, self.numeric_features),
+                    ('cat', cat_bin_transformer, self.cat_bin_features)
                     ])
             
-            return self.preprocessor
+            return preprocessor
         
         except Exception as e:
             print("Error happend while preprocessing:", e)
             raise e
+
+
+    def model_pipeline(self, model_type: str):
+
+        """
+        The model pipeline for LR and Tree for fitting
+        
+        Args:
+            model_type (str): The specified model for building pipeline
+        
+        Returns: Pipeline
+
+        """
+        
+        try:
+            
+            if model_type == 'lr':
+
+                preprocessor = self.preprocess()
+                pipeline = Pipeline([
+                    ('preprocessor', preprocessor),
+                    ('lr', LogisticRegression(solver="saga", penalty="l2", max_iter=1000,
+                    class_weight='balanced', random_state=42))
+                ])
+
+            elif model_type == 'lr_unbalanced':
+
+                pipeline = Pipeline([
+                    ('preprocessor', preprocessor),
+                    ('lr', LogisticRegression(solver="saga", penalty="l2", max_iter=1000,
+                    random_state=42))
+                ])
+
+            elif model_type == 'rf':
+
+                pipeline = Pipeline([
+                    ('preprocessor', preprocessor),
+                    ('rf', RandomForestClassifier(random_state=42, class_weight='balanced'))
+                ])
+
+            elif model_type == 'rf_unbalanced':
+
+                pipeline = Pipeline[(
+                    ('preprocessor', preprocessor),
+                    ('rf', RandomForestClassifier(random_state=42))
+                )]
+
+            return pipeline
+        
+        except Exception as e:
+            print("Error occured while processing model pipeline as :", str(e))
+            raise e
+            
     
     def fit_transform(self, split: pd.DataFrame):
 

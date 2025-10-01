@@ -26,12 +26,14 @@ class DataSplit(ABC):
 class DataSplit(DataSplit):
     """Class for data splitting"""
 
-    def split_data(self, data: pd.DataFrame) -> Union[pd.DataFrame, pd.Series]:
+    def split_data(self, data: pd.DataFrame,
+                   test_size: float = 0.15) -> Union[pd.DataFrame, pd.Series]:
         """
         Split the data into train validation and test sets
         
         Args:
             data (pd.DataFrame): The input data ingested for splitting
+            test_size (float): The size of the test set. Default is 0.15
             
         Returns:
             Union[pd.DatFrame, pd.Series]: The train, validation and test splits 
