@@ -5,5 +5,5 @@ seaborn
 scipy
 statsmodels
 scikit-learn
-imblearn
+imbalanced-learn
 shap
