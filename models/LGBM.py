@@ -5,6 +5,12 @@ import lightgbm as lgb
 import pandas as pd
 import numpy as np
 import optuna
+import os
+import joblib
+
+
+if not os.path.exists("models/"):
+    os.makedirs("model")
 
 
 class LGBMModel:
@@ -83,6 +89,7 @@ class LGBMModel:
                 oof_per_preds.append(val_probs)
                 models.append(lgb_classifier)
                 best_iterations.append(lgb_classifier.best_iteration_)
+
 
                 val_auc = roc_auc_score(y_val, val_probs)
                 val_ap = average_precision_score(y_val, val_probs)
@@ -212,7 +219,7 @@ class LGBMModel:
         except Exception as e:
             print("Error occured during train optuna as:", str(e))
             raise e
-        
+
 
     
 
