@@ -30,7 +30,7 @@ class CleanData:
 
         self.data = data
 
-    def clean_data(self) -> pd.DataFrame:
+    def _clean_data(self) -> pd.DataFrame:
         """
         Clean the Data
         
@@ -70,12 +70,14 @@ class CleanData:
         
         try:
             
+            data = self._clean_data()
+
             if 'MonthlyCharges' and 'total_addons' in self.data.columns:
                 
-                self.data['total_addons'] = self.data['total_addons'].fillna(0)
-                self.data['spend_per_addon'] = self.data['MonthlyCharges'] / (1 + self.data['total_addons'])
+                data['total_addons'] = data['total_addons'].fillna(0)
+                data['spend_per_addon'] = data['MonthlyCharges'] / (1 + data['total_addons'])
 
-                return self.data
+                return data
 
         except Exception as e:
             print("Error occured during feature engineering as :", str(e))
