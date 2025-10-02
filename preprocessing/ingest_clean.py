@@ -38,8 +38,8 @@ class CleanData:
 
         try:
 
-            numeric_features = self.data.select_dtypes(include='number').columns.tolist()
-            categorical_features = self.data.select_dtypes(exclude='number').columns.tolist()
+            numeric_features = self.data.select_dtypes(include=['number']).columns.tolist()
+            categorical_features = self.data.select_dtypes(exclude=['number']).columns.tolist()
 
             print("Cleaning the Data")
 

@@ -13,7 +13,7 @@ class PreprocessSetup:
 
     def __init__(
         self, numeric_features: list[str],
-        cat_bin_features: list[str]
+        categorical_features: list[str]
         ):
 
         """
@@ -29,7 +29,7 @@ class PreprocessSetup:
         """
 
         self.numeric_features = numeric_features
-        self.cat_bin_features = cat_bin_features
+        self.categorical_features = categorical_features
 
     
     
