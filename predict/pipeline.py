@@ -5,7 +5,7 @@ from sklearn.model_selection import StratifiedKFold
 from models.metrics import evaluation_metrics_lgbm
 
 
-def main():
+def lgbm_pipeline():
 
     ingest_data = IngestData(file_path=r"dataset\feature_engineered_data.csv").get_data()
     data = CleanData(data=ingest_data).feature_engineer()
@@ -44,18 +44,17 @@ def main():
         models=models, oof_preds=oof_preds
     )
 
-    print("Best Threshold:", best_threshold)
-    print("Best F1:", best_f1)
-    print("Average Precision:", avg_precision)
-    print("AUC Score:", roc_auc)
+    print("\nBest Threshold:", best_threshold)
+    print("\nBest F1:", best_f1)
+    print("\nAverage Precision:", avg_precision)
+    print("\nAUC Score:", roc_auc)
+    print("\nBest iterations:", best_iterations)
     print("\nClassification Report:\n\n", clf_report)
     print("\nConfusion Matrix:\n", conf_matrix)
 
 
-
-if __name__ == "__main__":    
-    main()
-
+if __name__ =="__main__":
+    lgbm_pipeline()
 
 
 
