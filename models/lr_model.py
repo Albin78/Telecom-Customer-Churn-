@@ -1,12 +1,10 @@
-from sklearn.linear_model import LogisticRegression
-from preprocessing.data_split import DataSplit
 from preprocessing.preprocess import PreprocessSetup
 from sklearn.metrics import (
     classification_report, confusion_matrix, 
     average_precision_score, roc_auc_score,
     precision_recall_curve
     )
-from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, StratifiedKFold, cross_val_score
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, cross_val_score
 from imblearn.pipeline import Pipeline as ImbPipe
 from imblearn.over_sampling import SMOTE
 import pandas as pd
