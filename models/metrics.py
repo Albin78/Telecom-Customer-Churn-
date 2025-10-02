@@ -9,7 +9,7 @@ import numpy as np
 
 
 def validation_metrics(
-    self, X_test: pd.DataFrame,
+    X_test: pd.DataFrame,
     y_test: pd.Series, best_estimator
     ):
 
@@ -46,9 +46,50 @@ def validation_metrics(
         clf_report = classification_report(y_test, y_preds, output_dict=True)
         conf_matrx = confusion_matrix(y_test, y_preds)
 
-        return auc_score, avg_precision, clf_report, conf_matrx, best_threshold, best_f1
+        return best_threshold, best_f1, auc_score, avg_precision, clf_report, conf_matrx
 
     except Exception as e:
         print("Error occured during the evaluation metrics as :", str(e))
         raise e
-        
+
+
+def evaluation_metrics_lgbm(
+    X_test: pd.DataFrame, 
+    y: pd.DataFrame | pd.Series,
+    y_test: pd.Series | np.ndarray,
+    models: list, oof_preds: list
+    ):
+
+    """
+    Evaluation metrcis for LGBM model
+    
+    Args:
+        X_test (pd.DataFrame): The test set of X or label
+        y_test (pd.Series | np.ndarray): The test set of y or target
+        models (list): The list of models from cv fits
+        oof_preds (list): The out of fold predictions from cv fits
+    
+    Returns:
+        tuple(float, float, dict, array): auc score, average precision score,
+                                          classification report, confusion meatrix
+    
+    """
+
+    precision, recall, threshold = precision_recall_curve(y, oof_preds)
+    f1_score = 2 * precision[:-1] * recall[:-1] / (precision[:-1] + recall[:-1] + 1e-6)
+
+    best_idx = np.nanargmax(f1_score)
+    best_threshold = threshold[best_idx]
+    best_f1 = f1_score[best_idx]
+
+    preds = np.mean([m.predict_proba(X_test)[:, 1] for m in models], axis=0)
+    y_preds = (preds >= best_threshold).astype(int)
+
+    avg_precision = average_precision_score(y_test, preds)
+    roc_auc = roc_auc_score(y_test, preds)
+
+    clf_report = classification_report(y_test, y_preds)
+    conf_matrix = confusion_matrix(y_test, y_preds)
+
+    return best_threshold, best_f1, avg_precision, roc_auc, clf_report, conf_matrix
+
