@@ -41,8 +41,8 @@ class DataSplit(DataSplit):
 
         try:
 
-            X = data.drop(columns='Churn', axis=1)
-            y = (data['Churn']=='Yes').astype(int)
+            X = data.drop(columns='churn', axis=1)
+            y = data['churn']
             
             test_size = 0.15
             val_ratio = test_size / (1 - test_size)
@@ -55,8 +55,8 @@ class DataSplit(DataSplit):
                 X_temp, y_temp, test_size=val_ratio, stratify=y_temp, random_state=42
             )
 
-            return X_train, X_val, X_test, y_train, y_val, y_test
+            return X, y, X_train, X_val, X_test, y_train, y_val, y_test
 
         except Exception as e:
-            print("Splitting into data sets failed:", e)
+            print("Error ocuured during data splits:", e)
             raise e
