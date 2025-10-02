@@ -56,6 +56,9 @@ class LGBMModel:
 
         try:
 
+            for cols in self.categorical_cols:
+                X[cols] = X[cols].astype("category")
+
             oof_preds = np.zeros(len(X))
             oof_per_preds = []
 
@@ -77,6 +80,7 @@ class LGBMModel:
                 lgb_classifier.fit(
                     X_train, y_train,
                     eval_set=[(X_val, y_val)],
+                    eval_metric='auc',
                     categorical_feature=self.categorical_cols,
                     callbacks=[early_stopping(stopping_rounds=100), log_evaluation(0)]
                 )
