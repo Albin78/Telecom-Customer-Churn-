@@ -1,17 +1,11 @@
 from preprocessing.preprocess import PreprocessSetup
-from sklearn.metrics import (
-    classification_report, confusion_matrix, 
-    average_precision_score, roc_auc_score,
-    precision_recall_curve
-    )
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, cross_val_score
-from imblearn.pipeline import Pipeline as ImbPipe
-from imblearn.over_sampling import SMOTE
 import pandas as pd
+import numpy as np
 
 
 
-class LRModel:
+class Model:
 
     def __init__(self, data: pd.DataFrame,
                 numeric_features: list[str],
@@ -41,7 +35,7 @@ class LRModel:
             smote (bool): smote pipeline to use. Defaults to False 
             
         Returns:
-            GridSearchCV model
+            sklearn.model_selection.GridSearchCV (Unfitted model)
         
         """
         
@@ -89,7 +83,7 @@ class LRModel:
             random_state (int): Random state for reproducability. defaults to 42
         
         Returns:
-            RandomizedSearch Cv Model
+            sklearn.model_selection.RandomizedSearch Cv (Unfitted model)
 
         """
         
@@ -113,7 +107,30 @@ class LRModel:
 
         except Exception as e:
             print("Error occured during randomized search cv as :", str(e))
+            raise e
+    
+
+    def fit(
+        self, X_train: pd.DataFrame,
+        y_train: pd.Series | np.ndarray,
+        model: RandomizedSearchCV | GridSearchCV
+        ):
+
+        """
+        Fitting the methods if grid search or randomized search
         
+        Args:
+            X_train (pd.DataFrame): The train sample for fitting of X or label
+            y_train (pd.DataFrame | pd.Series): The train sample for fitting of y or target
+            model: The model to fit. Can be RandomizedSearchCV or GridSearchCV
+
+        Returns:
+            The fitted model
+
+        """
+
+        return model.fit(X_train, y_train)
+
 
 
         
