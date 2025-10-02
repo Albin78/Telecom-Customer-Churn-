@@ -11,8 +11,10 @@ import pandas as pd
 class PreprocessSetup:
     """Setup the preprocessing pipeline for the  data"""
 
-    def __init__(self, data: pd.DataFrame, numeric_features: list[str],
-                cat_bin_features: list[str]):
+    def __init__(
+        self, numeric_features: list[str],
+        cat_bin_features: list[str]
+        ):
 
         """
         Initialize the PreprocessSetup class
@@ -26,7 +28,6 @@ class PreprocessSetup:
             None
         """
 
-        self.data = data
         self.numeric_features = numeric_features
         self.cat_bin_features = cat_bin_features
 

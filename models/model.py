@@ -7,12 +7,10 @@ import numpy as np
 
 class Model:
 
-    def __init__(self, data: pd.DataFrame,
-                numeric_features: list[str],
+    def __init__(self, numeric_features: list[str],
                 categorical_features: list[str]
                 ):
 
-        self.data = data
         self.numeric_features = numeric_features
         self.categorical_features = categorical_features
     
@@ -42,7 +40,7 @@ class Model:
         try:
             
             preprocess = PreprocessSetup(
-                data=self.data, numeric_features=self.numeric_features,
+                numeric_features=self.numeric_features,
                 cat_bin_features=self.categorical_features
                 )
             
