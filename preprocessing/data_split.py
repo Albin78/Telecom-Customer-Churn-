@@ -43,7 +43,7 @@ class DataSplit(DataSplit):
 
         try:
 
-            X = data.drop(columns=['Churn', 'customerID', 'gender', 'PhoneService'])
+            X = data.drop(columns='Churn', axis=1)
             y = (data['Churn']=='Yes').astype(int)
             
             test_size = 0.15

@@ -27,23 +27,28 @@ def validation_metrics(
         tuple(float, float, dict, array): auc_score, avg_precision, classification report, confusion matrix
         
     """
-    
-    val_probs = best_estimator.predict_proba(X_test)[:, 1]
+    try:
 
-    prec, rec, threshold = precision_recall_curve(y_test, val_probs)
+        val_probs = best_estimator.predict_proba(X_test)[:, 1]
 
-    f1_scores = 2 * prec[:-1] * rec[:-1] / (prec[:-1] + rec[:-1] + 1e-6)
-    best_idx = np.nanargmax(f1_scores)
-    best_threshold = threshold[best_idx]
-    best_f1 = f1_scores[best_idx]
+        prec, rec, threshold = precision_recall_curve(y_test, val_probs)
 
-    y_preds = (val_probs >= best_threshold).astype(int)
+        f1_scores = 2 * prec[:-1] * rec[:-1] / (prec[:-1] + rec[:-1] + 1e-6)
+        best_idx = np.nanargmax(f1_scores)
+        best_threshold = threshold[best_idx]
+        best_f1 = f1_scores[best_idx]
 
-    auc_score = roc_auc_score(y_test, val_probs)
-    avg_precision = average_precision_score(y_test, val_probs)
+        y_preds = (val_probs >= best_threshold).astype(int)
 
-    clf_report = classification_report(y_test, y_preds, output_dict=True)
-    conf_matrx = confusion_matrix(y_test, y_preds)
+        auc_score = roc_auc_score(y_test, val_probs)
+        avg_precision = average_precision_score(y_test, val_probs)
 
-    return auc_score, avg_precision, clf_report, conf_matrx, best_threshold, best_f1
+        clf_report = classification_report(y_test, y_preds, output_dict=True)
+        conf_matrx = confusion_matrix(y_test, y_preds)
+
+        return auc_score, avg_precision, clf_report, conf_matrx, best_threshold, best_f1
+
+    except Exception as e:
+        print("Error occured during the evaluation metrics as :", str(e))
+        raise e
         

@@ -37,40 +37,50 @@ class CleanData:
         """
 
         try:
-            
-            binary_features = ["Partner", "Dependents", "PaperlessBilling", "SeniorCitizen"]
-            numeric_features = ['tenure', 'MonthlyCharges', 'TotalCharges']
-            
-            categorical_features = [
-                "InternetService", "Contract", "PaymentMethod",
-                "MultipleLines", "OnlineSecurity", "OnlineBackup",
-                "DeviceProtection", "TechSupport", "StreamingTV", "StreamingMovies"
-            ]
 
-            cat_bin = categorical_features + binary_features
+            numeric_features = self.data.select_dtypes(include='number').columns.tolist()
+            categorical_features = self.data.select_dtypes(exclude='number').columns.tolist()
 
             print("Cleaning the Data")
 
-            self.data['PaymentMethod'] = self.data['PaymentMethod'].replace({
-                    "Bank transfer (automatic)": "Automatic",
-                    "Credit card (automatic)": "Automatic",
-                    "Electronic check": "Electronic check",
-                    "Mailed check": "Mailed check"
-            })
+            if 'TotalCharges' in self.data.columns:
 
-            self.data['TotalCharges'] = pd.to_numeric(self.data['TotalCharges'], errors='coerce')
+                self.data['TotalCharges'] = pd.to_numeric(self.data['TotalCharges'], errors='coerce')
 
-            self.data['TotalCharges'] = self.data['TotalCharges'].fillna(self.data['TotalCharges'].median())
+                self.data['TotalCharges'] = self.data['TotalCharges'].fillna(self.data['TotalCharges'].median())
 
-            self.data[numeric_features] = self.data[numeric_features].astype(float)
 
-            for col in self.data.select_dtypes('object'):
-                self.data[col] = self.data[col].str.strip()
-
-            for cols in cat_bin:
+            for cols in categorical_features:
                 self.data[cols] = self.data[cols].astype('category')
+            
+            return self.data
 
         except Exception as e:
             print("Error in cleaning data:", e)
             raise e
+
+    def feature_engineer(self):
+
+        """
+        
+        Feature engineer the dataset features for better learning
+        space for model
+        
+        """
+        
+        try:
             
+            if 'MonthlyCharges' and 'total_addons' in self.data.columns:
+                
+                self.data['total_addons'] = self.data['total_addons'].fillna(0)
+                self.data['spend_per_addon'] = self.data['MonthlyCharges'] / (1 + self.data['total_addons'])
+
+                return self.data
+
+        except Exception as e:
+            print("Error occured during feature engineering as :", str(e))
+            raise e
+                
+
+        
+    
