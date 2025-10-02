@@ -1,6 +1,8 @@
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
+from imblearn.over_sampling import SMOTE
+from imblearn.pipeline import Pipeline as ImbPipe
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 import pandas as pd
@@ -65,13 +67,15 @@ class PreprocessSetup:
             raise e
 
 
-    def model_pipeline(self, model_type: str):
+    def model_pipeline(self, model_type: str,
+                      smote: bool=False):
 
         """
         The model pipeline for LR and Tree for fitting
         
         Args:
             model_type (str): The specified model for building pipeline
+            smote (bool): The SMOTE method for class imbalance
         
         Returns: Pipeline
 
@@ -101,7 +105,16 @@ class PreprocessSetup:
                 estimator = RandomForestClassifier(random_state=42)
 
             
-            pipeline = Pipeline([
+            if smote:
+
+                pipeline = ImbPipe([
+                    ("preprocessor", preprocessor),
+                    ("smote", SMOTE(random_state=42)),
+                    ("model", estimator)
+                ])
+
+            else:
+                pipeline = Pipeline([
                     ("preprocessor", preprocessor),
                     ("model", estimator)
                 ])
