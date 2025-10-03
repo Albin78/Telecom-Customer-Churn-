@@ -76,7 +76,7 @@ class CleanData:
                 
                 data['total_addons'] = data['total_addons'].fillna(0)
                 data['spend_per_addon'] = data['MonthlyCharges'] / (1 + data['total_addons'])
-                
+
                 return data
 
         except Exception as e:

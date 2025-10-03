@@ -100,7 +100,14 @@ class LGBMPipeline:
 
             for cols in categorical_features:
                 X_train[cols] = X_train[cols].astype("category")
-
+            
+            train_meta = {
+                "features": list(X_train.columns),
+                "categorical_mappings": {
+                    col: X_train[col].astype("category")
+                    for col in categorical_features
+                    }
+            }
 
             final_model = lgb.LGBMClassifier(
                 **params, n_estimators=best_iterator, 
@@ -124,7 +131,7 @@ class LGBMPipeline:
                 params=params, best_threshold=best_threshold, 
                 best_iterator=best_iterator, best_f1=best_f1,
                 average_precision=average_precision, 
-                roc_auc=roc_auc
+                roc_auc=roc_auc, train_meta=train_meta
             )
 
             return average_precision, roc_auc, clf_report, conf_matrx
@@ -139,7 +146,8 @@ class LGBMPipeline:
         final_model: lgb.LGBMClassifier,
         params: dict, best_threshold: float,
         best_iterator: int, best_f1: float,
-        average_precision: float, roc_auc: float
+        average_precision: float, roc_auc: float,
+        categorical_features: list[str], train_meta: dict
         ):
 
         """
@@ -159,7 +167,7 @@ class LGBMPipeline:
         """
 
         try:
-
+            
             if not os.path.exists(save_dir):
                 os.makedirs(save_dir, exist_ok=True)
 
@@ -179,6 +187,11 @@ class LGBMPipeline:
                     "roc auc score": roc_auc,
                     "average precision": average_precision
                 }, f)
+
+            with open(os.path.join(save_dir, "training_meta.json"), "w") as f:
+                json.dump(train_meta, f)
+               
+           
 
         except Exception as e:
             print("Error occured while saving artifacts as:", str(e))
