@@ -99,3 +99,40 @@ def evaluation_metrics_lgbm(
         print("Error durinng the evaluation of LGBM as :", str(e))
         raise e
 
+
+def final_model_prediction(
+    fitted_model, X_test:pd.DataFrame,
+    y_test: pd.DataFrame, 
+    best_iterator: int
+    ):
+
+    """
+    The final model prediction ad evaluation metrics
+
+    Args:
+        fitted_model: The fitted model for prediction
+    
+    Returns:
+        (float, float, dict, np.ndarray): roc auc score, average precision, 
+                                          classification report, confusion matrix
+
+    """
+
+    test_probs = fitted_model.predict_proba(
+        X_test, num_iteration=best_iterator)[:, 1]
+
+    precision, recall, threshold = precision_recall_curve(y_test, test_probs)
+    f1_scores = 2 * precision[:-1] * recall[:-1] / (precision[:-1] + recall[:-1] + 1e-6)
+    best_idx = np.nanargmax(f1_scores)
+    best_threshold = threshold[best_idx]
+    best_f1 = f1_scores[best_idx]
+
+    test_preds = (test_probs >= best_threshold).astype(int)
+
+    average_precision = average_precision_score(y_test, test_probs)
+    roc_auc = roc_auc_score(y_test, test_probs)
+
+    clf_report = classification_report(y_test, test_preds)
+    conf_matrx = confusion_matrix(y_test, test_preds)
+
+    return best_f1, best_threshold, average_precision, roc_auc, clf_report, conf_matrx
