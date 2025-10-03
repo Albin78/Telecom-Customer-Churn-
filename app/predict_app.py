@@ -58,44 +58,46 @@ def run_app(
             spend_per_addon = st.number_input("Spend per Addon", min_value=0.0, value=20.12)
 
             submitted = st.form_submit_button("Predict")
+            
+            if submitted:
 
-            inputs = {
+                inputs = {
 
-                'SeniorCitizen': senior_citizen,
-                'Partner': partner,
-                'Dependents':dependents,
-                'tenure':tenure,
-                'InternetService':internet_service,
-                "Contract": contract,
-                "PaperlessBilling": paperlessbilling,
-                "PaymentMethod": payment_method,
-                'MonthlyCharges': monthly_charges,
-                'TotalCharges': total_charges,
-                'Fibre_stream_pref': fibre_stream_pref,
-                'DSL_security_pref': dsl_security_pref,
-                'has_phone': has_phone,
-                'has_multipleline': has_multipleline,
-                "tenure_bucket": tenure_bucket,
-                "avg_monthly_charge": avg_monthly_charge,
-                'total_addons': total_addons,
-                "contract_payment": contract_payment,
-                "security_bins": security_bins,
-                'streaming_bins': streaming_bins,
-                'new_customers': new_customers,
-                'spend_per_addon': spend_per_addon
+                    'SeniorCitizen': senior_citizen,
+                    'Partner': partner,
+                    'Dependents':dependents,
+                    'tenure':tenure,
+                    'InternetService':internet_service,
+                    "Contract": contract,
+                    "PaperlessBilling": paperlessbilling,
+                    "PaymentMethod": payment_method,
+                    'MonthlyCharges': monthly_charges,
+                    'TotalCharges': total_charges,
+                    'Fibre_stream_pref': fibre_stream_pref,
+                    'DSL_security_pref': dsl_security_pref,
+                    'has_phone': has_phone,
+                    'has_multipleline': has_multipleline,
+                    "tenure_bucket": tenure_bucket,
+                    "avg_monthly_charge": avg_monthly_charge,
+                    'total_addons': total_addons,
+                    "contract_payment": contract_payment,
+                    "security_bins": security_bins,
+                    'streaming_bins': streaming_bins,
+                    'new_customers': new_customers,
+                    'spend_per_addon': spend_per_addon
 
-            }
+                }
 
 
-            preds, probs = predictor.predict_from_dict(inputs)
+                preds, probs = predictor.predict_from_dict(inputs)
 
-            prediction_label = pred_class[int(preds[0])]
-            probability = float(probs[0])
+                prediction_label = pred_class[int(preds[0])]
+                probability = float(probs[0])
 
-            st.subheader("🔮 Prediction Result")
-            st.write(f"**Prediction**: {prediction_label}")
-            st.progress(probability)
-            st.write(f"**Probability Score**: {probability:.2f}")
+                st.subheader("🔮 Prediction Result")
+                st.write(f"**Prediction**: {prediction_label}")
+                st.progress(probability)
+                st.write(f"**Probability Score**: {probability:.2f}")
 
     
     except Exception as e:
