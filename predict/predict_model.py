@@ -3,7 +3,6 @@ import numpy as np
 import json
 import joblib
 import os
-from predict.pipeline import LGBMPipeline
 
 
 class LGBMPredictor:
