@@ -11,3 +11,4 @@ imbalanced-learn
 shap
 lightgbm
 optuna
+streamlit
