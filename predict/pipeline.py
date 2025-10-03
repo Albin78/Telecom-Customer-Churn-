@@ -2,9 +2,14 @@ from preprocessing.data_split import DataSplit
 from preprocessing.ingest_clean import IngestData, CleanData
 from models.LGBM import LGBMModel
 from sklearn.model_selection import StratifiedKFold
+from models.metrics import final_model_prediction
 import lightgbm as lgb
 import numpy as np
 import pandas as pd
+import os
+import joblib
+import json
+
 
 class LGBMPipeline:
 
@@ -54,7 +59,7 @@ class LGBMPipeline:
             y=y, params=base_params
             )
 
-        return best_iterations, base_params, oof_preds, models, X_train, X_val, y_train, y_val
+        return best_iterations, base_params, oof_preds, models, X_train, X_val, X_test, y_train, y_val, y_test
 
     
     def estimator(self):
@@ -66,8 +71,8 @@ class LGBMPipeline:
         
         """
 
-        best_iterations, params, _, _, X_train, X_val, y_train, y_val = self.run_pipeline()
-        best_iterator = int(np.mean(best_iterations))
+        best_iterations, params, _, _, X_train, X_val, X_test, y_train, y_val, y_test = self.run_pipeline()
+        best_iterator = round(np.median(best_iterations))
 
         
         X_train = pd.concat([X_train, X_val])
@@ -92,7 +97,70 @@ class LGBMPipeline:
             )
         
         
+        best_f1, best_threshold, average_precision, roc_auc, clf_report, conf_matrx = final_model_prediction(
+            final_model, X_test, y_test, best_iterator
+        )
 
+        self._save(
+            save_dir="models/", final_model=final_model,
+            params=params, best_threshold=best_threshold, 
+            best_iterator=best_iterator, best_f1=best_f1,
+            average_precision=average_precision, 
+            roc_auc=roc_auc
+        )
+
+        return average_precision, roc_auc, clf_report, conf_matrx
+
+
+    def _save(
+        self, save_dir: str,
+        final_model: lgb.LGBMClassifier,
+        params: dict, best_threshold: float,
+        best_iterator: int, best_f1: float,
+        average_precision: float, roc_auc: float
+        ):
+
+        """
+        Saving the model with threshold and parameters
+        for reusing it in production
+        
+        Args:
+            save_dir (str): The save dir path to which the model is saved
+            final_model: The LGBM classifier final model estimator
+            params (dict): The parameters used by the final model 
+            best_threshold (float): The best threshold used to get the best performance
+            best_iterator (int): The best iterator for saving into as metadata of estimator
+            best_f1 (float): The final f1 score
+            average_precision (float): Final average precision score 
+            roc_auc (float): Final roc-auc score
+
+        """
+
+        try:
+
+            if save_dir:
+                os.makedirs(save_dir, exist_ok=True)
+
+            joblib.dump(
+                final_model,
+                os.path.join(save_dir, "final_estimator.pkl")
+                )
+            
+            with open(os.path.join(save_dir, "final_threshold.json"), 'w') as f:
+                json.dump({"Threshhold": float(best_threshold)}, f)
+
+            with open(os.path.join(save_dir, "estimator_metadata.json"), "w") as f:
+                json.dump({
+                    "best iterator": best_iterator,
+                    "parameters": params,
+                    "best f1": best_f1,
+                    "roc auc score": roc_auc,
+                    "average precision": average_precision
+                }, f)
+
+        except Exception as e:
+            print("Error occured while saving artifacts as:", str(e))
+            raise e
 
 
     
