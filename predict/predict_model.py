@@ -147,7 +147,7 @@ class LGBMPredictor:
 
             input_df = input_df.reindex(columns=self.train_metadata["features"], fill_value=np.nan)
 
-            for col, categories in self.train_metadata["categorical_mappings"].items():
+            for col, categories in self.train_metadata.get("categorical_mappings", {}).items():
 
                 if col in input_df.columns:
                     input_df[col] = pd.Categorical(input_df[col], categories=categories)
