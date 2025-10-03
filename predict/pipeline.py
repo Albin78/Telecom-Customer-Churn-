@@ -103,11 +103,14 @@ class LGBMPipeline:
             
             train_meta = {
                 "features": list(X_train.columns),
-                "categorical_mappings": {
-                    col: X_train[col].astype("category")
+                    "categorical_mappings": {
+                    col: [str(c) for c in X_train[col].cat.categories.tolist()]
                     for col in categorical_features
+                    },
+                    "dtypes": {col: str(X_train[col].dtype) for col in X_train.columns
                     }
-            }
+                
+                }
 
             final_model = lgb.LGBMClassifier(
                 **params, n_estimators=best_iterator, 
@@ -147,7 +150,7 @@ class LGBMPipeline:
         params: dict, best_threshold: float,
         best_iterator: int, best_f1: float,
         average_precision: float, roc_auc: float,
-        categorical_features: list[str], train_meta: dict
+        train_meta: dict
         ):
 
         """
@@ -163,6 +166,7 @@ class LGBMPipeline:
             best_f1 (float): The final f1 score
             average_precision (float): Final average precision score 
             roc_auc (float): Final roc-auc score
+            train_meta (dict): The training metadata
 
         """
 
