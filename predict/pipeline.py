@@ -36,7 +36,7 @@ class LGBMPipeline:
             ingest_data = IngestData(file_path=r"dataset\feature_engineered_data.csv").get_data()
             data = CleanData(data=ingest_data).feature_engineer()
 
-            categorical_features = data.select_dtypes(exclude='number').columns.tolist()
+            categorical_features = data.select_dtypes(exclude=['number']).columns.tolist()
 
             X, y, X_train, X_val, X_test, y_train, y_val, y_test = DataSplit().split_data(data=data, test_size=0.15)
 
@@ -160,7 +160,7 @@ class LGBMPipeline:
 
         try:
 
-            if save_dir:
+            if not os.path.exists(save_dir):
                 os.makedirs(save_dir, exist_ok=True)
 
             joblib.dump(
@@ -184,9 +184,4 @@ class LGBMPipeline:
             print("Error occured while saving artifacts as:", str(e))
             raise e
 
-
-
-
-    
-    
 
