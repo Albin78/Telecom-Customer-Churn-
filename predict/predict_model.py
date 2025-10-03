@@ -94,7 +94,7 @@ class LGBMPredictor:
 
     
     def predict(
-        self, X: pd.DataFrame
+        self, input_df: pd.DataFrame
         ):
 
         """
@@ -102,7 +102,7 @@ class LGBMPredictor:
         loaded model.
         
         Args:
-            X (pd.DataFrame): The input dataframe
+            input (pd.DataFrame): The input dataframe
 
         Returns:
             preds, probs (tuple(int, float)): The prediction label 
@@ -111,7 +111,10 @@ class LGBMPredictor:
         """
         
         try:
-            probs = self.model.predict_proba(X, num_iteration=self._load_iterator())[:, 1]
+
+            input_df = input_df.reindex(columns=self.train_metadata["features"], fill_value=np.nan)
+
+            probs = self.model.predict_proba(input_df, num_iteration=self._load_iterator())[:, 1]
             preds = (probs >= self._load_threshold()).astype(int)
 
         except Exception as e:
@@ -143,12 +146,20 @@ class LGBMPredictor:
             input_df = pd.DataFrame([input_dict])
 
             input_df = input_df.reindex(columns=self.train_metadata["features"], fill_value=np.nan)
-            cat_cols = input.select_dtypes(exclude=['number']).columns.tolist()
 
-            for c in cat_cols:
-                input[c] = input[c].astype("category")
+            for col, categories in self.train_metadata["categorical_mappings"].items():
 
-            preds, probs = self.predict(input)
+                if col in input_df.columns:
+                    input_df[col] = pd.Categorical(input_df[col], categories=categories)
+            
+            for col, dtype in self.train_metadata.get("dtypes", {}).items():
+
+                if col in input_df.columns:
+                    if dtype.startswith("int") or dtype.startswith("float"):
+                        input_df[col] = pd.to_numeric(input_df[col], errors="coerce")
+            
+
+            preds, probs = self.predict(input_df)
 
             return preds, probs
 
@@ -168,13 +179,13 @@ def main():
     print("\nROC-AUC:", roc_auc)
     print("\nClassification Report:\n\n", clf_report)
     print("\nConfusion Matrix:\n", conf_matrx)
+    
+    pred_class = {0: "No Churn", 1: "Churn"}
 
     predictor = LGBMPredictor(artificats_dir="models_artifact/")
 
-    # model = predictor._load_model()
-    # print("\n\nModel Features:", model.feature_name_)
     
-    input = {
+    inputs = {
         'SeniorCitizen': 0,
         'Partner': 1,
         'Dependents':0,
@@ -190,7 +201,6 @@ def main():
         'has_phone': 1,
         'has_multipleline': 0,
         "tenure_bucket": "4-12",
-        "avg_monthly_charge": 430.7 / 12,    
         'total_addons': 1,
         "contract_payment": "One year_Electronic check",
         "security_bins": 1,
@@ -199,19 +209,20 @@ def main():
         'spend_per_addon': 20.12
         }
 
-    # ['SeniorCitizen', 'Partner', 'Dependents', 'tenure', 'InternetService', 'Contract',
-    #  'PaperlessBilling', 'PaymentMethod', 'MonthlyCharges', 'TotalCharges', 'Fibre_stream_pref', 
-    #  'DSL_security_pref', 'has_phone', 'has_multipleline', 'tenure_bucket', 'avg_monthly_charge', 
-    #  'total_addons', 'contract_payment', 'security_bins', 'streaming_bins', 'new_customers', 'spend_per_addon']
 
-    # avg_monthly_charge = input["MonthlyCharges"] / input["tenure"]
+    avg_monthly_charge = inputs["MonthlyCharges"] / inputs["tenure"]
 
-    # input["avg_monthly_charge"] = avg_monthly_charge
+    inputs["avg_monthly_charge"] = avg_monthly_charge
 
-    preds, probs = predictor.predict_from_dict(input)
+    preds, probs = predictor.predict_from_dict(inputs)
+    
+    result = {
+        "label": str(pred_class[preds[0]]),
+        "probs": probs
+    }
 
-    print("Prediction Label:", preds)
-    print("\nPrediction Probabilities:", probs)
+    print("\n\nPrediction Label:", result["label"])
+    print("\nPrediction Probabilities:", result["probs"])
 
 
 if __name__ == "__main__":
