@@ -1,3 +1,4 @@
+from typing import Tuple
 from preprocessing.data_split import DataSplit
 from preprocessing.ingest_clean import IngestData, CleanData
 from models.LGBM import LGBMModel
@@ -12,6 +13,10 @@ import json
 
 
 class LGBMPipeline:
+
+    def __init__(self, save_path: str):
+        
+        self.save_path = save_path
 
     def run_pipeline(self):
 
@@ -62,13 +67,19 @@ class LGBMPipeline:
         return best_iterations, base_params, oof_preds, models, X_train, X_val, X_test, y_train, y_val, y_test
 
     
-    def estimator(self):
+    def estimator(self) -> Tuple[float, float, 
+                                dict, np.ndarray
+                                ]:
 
         """
         The final estimator for the prediction with
         the parameters that fit well taken from the 
         cross validation fitting
         
+        Returns:
+            tuple(float, float, dict, np.ndarray): Average precision score, roc auc score, 
+                                                   classification report, confusion matrix
+
         """
 
         best_iterations, params, _, _, X_train, X_val, X_test, y_train, y_val, y_test = self.run_pipeline()
@@ -102,7 +113,7 @@ class LGBMPipeline:
         )
 
         self._save(
-            save_dir="models/", final_model=final_model,
+            save_dir=self.save_path, final_model=final_model,
             params=params, best_threshold=best_threshold, 
             best_iterator=best_iterator, best_f1=best_f1,
             average_precision=average_precision, 
@@ -163,7 +174,20 @@ class LGBMPipeline:
             raise e
 
 
-    
+
+def main():
+    lgbm = LGBMPipeline(save_path="models/")
+
+    average_precision, roc_auc, clf_report, conf_matrx = lgbm.estimator()
+
+    print("\n\nAverage precision:", average_precision)
+    print("\nROC-AUC score:", roc_auc)
+    print("\nClassification report:\n\n", clf_report)
+    print("\nConfusion Matrix:\n", conf_matrx)
+
+
+if __name__ == "__main__":
+    main()
 
 
 

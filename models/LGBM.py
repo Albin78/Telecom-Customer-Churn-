@@ -8,9 +8,6 @@ import optuna
 import os
 
 
-if not os.path.exists("models/"):
-    os.makedirs("model")
-
 
 class LGBMModel:
 
