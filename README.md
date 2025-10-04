@@ -73,11 +73,11 @@ Better handling of feature interactions
 
 🧰 Installation & Setup
 
-1️⃣ Clone the repository
+## 1️⃣ Clone the repository
 git clone https://github.com/Albin78/Telecom-Customer-Churn-.git
 cd customer-churn-prediction
 
-2️⃣ Create & activate a virtual environment
+## 2️⃣ Create & activate a virtual environment
 python -m venv .venv
 
 ## Activate environment
@@ -88,7 +88,7 @@ python -m venv .venv
 ### On macOS/Linux:
 source .venv/bin/activate
 
-3️⃣ Install dependencies
+## 3️⃣ Install dependencies
 pip install -r requirements.txt
 
 🧪 Running the Pipeline
@@ -157,7 +157,7 @@ The final LightGBM model achieved strong performance, outperforming both Logisti
 💬 RAG or LLM Integration: For customer retention insights or intelligent assistant modules
 
 
-⚠️ Limitations
+## ⚠️ Limitations
 
 The current model is limited by the available dataset size and diversity.
 
