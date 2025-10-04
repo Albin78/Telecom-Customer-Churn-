@@ -1,7 +1,7 @@
-🧠 Customer Churn Prediction System
+# 🧠 Customer Churn Prediction System
 
 
-📘 Overview
+## 📘 Overview
 
 This project is an end-to-end Customer Churn Prediction System designed to predict whether a customer is likely to churn (leave) or stay with the service.
 It includes complete stages of a real-world ML workflow — from data ingestion, feature engineering, and model training to evaluation, artifact saving, and deployment via Streamlit.
@@ -79,10 +79,13 @@ cd customer-churn-prediction
 
 2️⃣ Create & activate a virtual environment
 python -m venv .venv
-# Activate environment
-# On Windows:
+
+## Activate environment
+
+### On Windows:
 .venv\Scripts\activate
-# On macOS/Linux:
+
+### On macOS/Linux:
 source .venv/bin/activate
 
 3️⃣ Install dependencies
