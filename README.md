@@ -51,7 +51,7 @@ Customer Churn/
 └── README.md                 
 
 
-🚀 Key Features
+### 🚀 Key Features
 
 ✅ Complete ML Workflow — Data ingestion → cleaning → feature engineering → model training → evaluation
 ✅ Cross-validation (CV) + Optuna — For robust and optimized LightGBM model performance
@@ -60,7 +60,7 @@ Customer Churn/
 ✅ Interactive Streamlit UI — For real-time churn predictions
 ✅ Modular Design — Each component (data, model, prediction, UI) is isolated for scalability
 
-🧩 Model Used
+### 🧩 Model Used
 
 The project implements multiple models (Logistic Regression, Random Forest, LightGBM).
 After extensive evaluation, LightGBM was chosen as the final model because it consistently outperformed others in metrics like:
