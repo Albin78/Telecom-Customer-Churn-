@@ -114,7 +114,7 @@ streamlit run predict_app.py
 
 The app provides an interactive interface for entering customer details and viewing predictions visually.
 
-🎨 Streamlit UI Highlights
+## 🎨 Streamlit UI Highlights
 
 Dark blue background theme with a soft overlay
 
@@ -127,7 +127,7 @@ Confidence percentage display
 
 Error-handling for model loading and prediction issues
 
-📊 Evaluation & Metrics
+## 📊 Evaluation & Metrics
 
 Performance metrics are implemented in models/metrics.py including:
 
