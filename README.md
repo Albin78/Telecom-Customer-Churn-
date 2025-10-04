@@ -9,6 +9,8 @@ It includes complete stages of a real-world ML workflow — from data ingestion,
 The primary objective is to help businesses identify potential churners and take proactive measures for retention.
 
 ⚙️ Project Structure
+
+
 Customer Churn/
 │
 ├── app/
