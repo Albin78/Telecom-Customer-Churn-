@@ -75,6 +75,7 @@ Better handling of feature interactions
 
 ## 1️⃣ Clone the repository
 git clone https://github.com/Albin78/Telecom-Customer-Churn-.git
+
 cd customer-churn-prediction
 
 ## 2️⃣ Create & activate a virtual environment
