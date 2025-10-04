@@ -45,7 +45,7 @@ Customer Churn/
 │   ├── final_estimator.pkl       # LightGBM model
 │   ├── estimator_metadata.json   # Metadata:  best iteration, params
 │   |── final_threshold.json      # threshold
-│    └── training_meta.json        # training metadata: features, categories
+│   └── training_meta.json        # training metadata: features, categories
 │   
 ├── requirements.txt          # All dependencies
 └── README.md                 # Project documentation
@@ -73,31 +73,32 @@ Better handling of feature interactions
 
 ## 🧰 Installation & Setup
 
-## 1️⃣ Clone the repository
-git clone https://github.com/Albin78/Telecom-Customer-Churn-.git
+## Clone the repository
+`git clone https://github.com/Albin78/Telecom-Customer-Churn-.git`
 
-cd customer-churn-prediction
+`cd customer-churn-prediction`
 
-## 2️⃣ Create & activate a virtual environment
-python -m venv .venv
+## Create & activate a virtual environment
+`python -m venv .venv`
 
 ## Activate environment
 
 ### On Windows:
-.venv\Scripts\activate
+`.venv\Scripts\activate`
 
 ### On macOS/Linux:
-source .venv/bin/activate
+`source .venv/bin/activate`
 
-## 3️⃣ Install dependencies
-pip install -r requirements.txt
+## Install dependencies
+`pip install -r requirements.txt`
 
-🧪 Running the Pipeline
+## 🧪 Running the Pipeline
+
 ▶️ Run the full training pipeline
 
 This command runs ingestion, cleaning, feature engineering, cross-validation, and model fitting.
 
-python -m predict.pipeline
+`python -m predict.pipeline`
 
 
 Artifacts such as the final model and metadata will be saved in the artifacts/ directory.
@@ -108,8 +109,8 @@ Using Python
 
 🖥️ Launch the Streamlit App
 Run Command
-cd app
-streamlit run predict_app.py
+`cd app`
+`streamlit run predict_app.py`
 
 
 The app provides an interactive interface for entering customer details and viewing predictions visually.
@@ -143,7 +144,7 @@ Threshold tuning logic (for classification decision boundary optimization)
 
 The final LightGBM model achieved strong performance, outperforming both Logistic Regression and Random Forest models.
 
-🔮 Future Enhancements
+## 🔮 Future Enhancements
 
 🧾 More Data Collection: Expanding the dataset for better generalization
 
