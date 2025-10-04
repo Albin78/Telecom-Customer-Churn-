@@ -172,7 +172,7 @@ def run_app(
 
                   f"""
                     <div style="
-                        background: linear-gradient(135deg, #0a1931, #185adb);
+                        background-color: {bg_color};
                         border-radius: 12px;
                         padding: 14px 20px;
                         text-align: center;
