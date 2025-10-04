@@ -35,6 +35,7 @@ def run_app(
             unsafe_allow_html=True
             )
         
+        
         st.divider()
 
         with st.form("Churn Form"):
@@ -72,10 +73,10 @@ def run_app(
                 avg_monthly_charge = total_charges / tenure if tenure > 0 else 0.0
                 total_addons = st.number_input("Total Addons", min_value=0, value=1)
                 contract_payment = f"{contract}_{payment_method}"
-                security_bins = st.slider("Security Addons Bin", min_value=0, value=1, step=1)
-                streaming_bins = st.slider("Streaming Addons Bin", min_value=0, value=1, step=1)
-                new_customers = st.selectbox("New Customer", [0, 1])
-                spend_per_addon = st.number_input("Spend per Addon", min_value=0.0, value=20.12)
+                security_bins = st.number_input("Security Addons Bin", min_value=0, value=1, step=1)
+                streaming_bins = st.number_input("Streaming Addons Bin", min_value=0, value=1, step=1)
+                new_customers = 0 if tenure > 3 else 1
+                spend_per_addon = monthly_charges / total_addons if total_addons > 0 else 0.0
 
             submitted = st.form_submit_button("🚀 Predict")
                 
@@ -119,6 +120,7 @@ def run_app(
                 st.metric(label="Prediction", value=prediction_label)
                 st.progress(probability)
                 st.write(f"**Probability Score**: {probability:.2f}")
+
 
     
     except Exception as e:
