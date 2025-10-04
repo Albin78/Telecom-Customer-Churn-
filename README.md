@@ -14,41 +14,41 @@ The primary objective is to help businesses identify potential churners and take
 Customer Churn/
 │
 ├── app/
-│   ├── predict_app.py        # Streamlit UI logic
-│   └── run_app.py            # Runs Streamlit app
+│   ├── predict_app.py       
+│   └── run_app.py            
 ├── dataset/
 |   ├── feature_engineered_data.csv        
 │   └── raw_dataset.csv
 |  
 ├── notebooks/
-│   ├── EDA1.ipynb            # Initial exploration
-│   ├── EDA2.ipynb            # Feature analysis & visualization
-│   ├── EDA3.ipynb            # Advanced EDA and correlations
-│   ├── LR_model.ipynb         # Logistic Regression experiments
-│   └── Tree_model.ipynb       # Decision tree and LightGBM modeling
+│   ├── EDA1.ipynb            
+│   ├── EDA2.ipynb            
+│   ├── EDA3.ipynb            
+│   ├── LR_model.ipynb         
+│   └── Tree_model.ipynb       
 │
 ├── models/
-│   ├── LGBM.py               # LightGBM training with CV folds & Optuna tuning
-│   ├── metrics.py            # Performance evaluation metrics
-│   └── model.py              # Logistic Regression 
+│   ├── LGBM.py               
+│   ├── metrics.py            
+│   └── model.py             
 │
 ├── preprocessing/
-│   ├── data_split.py         # Train-test splitting logic
-│   ├── ingest_clean.py       # Data ingestion, cleaning, and feature engineering
-│   └── preprocess.py         # Additional preprocessing utilities
+│   ├── data_split.py         
+│   ├── ingest_clean.py       
+│   └── preprocess.py         
 │
 ├── predict/
-│   ├── pipeline.py           # Runs complete pipeline 
-│   └── predict_model.py      # Loads saved model + threshold for predictions
+│   ├── pipeline.py           
+│   └── predict_model.py      
 │
 ├── artifacts/
-│   ├── final_estimator.pkl       # LightGBM model
-│   ├── estimator_metadata.json   # Metadata:  best iteration, params
-│   |── final_threshold.json      # threshold
-│   └── training_meta.json        # training metadata: features, categories
+│   ├── final_estimator.pkl       
+│   ├── estimator_metadata.json   
+│   |── final_threshold.json      
+│   └── training_meta.json        
 │   
-├── requirements.txt          # All dependencies
-└── README.md                 # Project documentation
+├── requirements.txt          
+└── README.md                 
 
 
 🚀 Key Features
