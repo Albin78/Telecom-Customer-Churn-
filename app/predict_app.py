@@ -1,5 +1,7 @@
 from predict.predict_model import LGBMPredictor
 import streamlit as st
+import base64
+import os
 
 
 def run_app(
@@ -12,75 +14,118 @@ def run_app(
     
     """
 
-    try:
 
-        predictor = LGBMPredictor(artificats_dir=artifacts_dir)
+    st.set_page_config(
+        page_title="Customer Churn System",
+        page_icon="📊",
+        layout="wide",
+        initial_sidebar_state="expanded"
+    )
+        
+    def set_background(image_file):
+        with open(image_file, "rb") as f:
+            data = f.read()
+        encoded = base64.b64encode(data).decode()
 
-        pred_class = {0: "No Churn", 1: "Churn"}
+        page_bg = f"""
+        <style>
+        [data-testid="stAppViewContainer"] {{
+            background: url("data:image/png;base64,{encoded}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }}
+        [data-testid="stHeader"] {{
+            background: rgba(0, 0, 0, 0);
+        }}
+        .stApp {{
+            background-color: rgba(0, 0, 64, 0.85); /* dark blue overlay */
+            color: #FFFFFF;
+        }}
+        .css-18e3th9 {{
+            background-color: transparent !important;
+        }}
+        </style>
+        """
 
-        st.set_page_config(
-            page_title="Customer Churn System",
-            page_icon="📊",
-            layout="wide",
-            initial_sidebar_state="expanded"
+        st.markdown(page_bg, unsafe_allow_html=True)
+
+
+
+    background_image = os.path.join("dataset", "app_bg.jpg")
+
+    if os.path.exists(background_image):
+        set_background(background_image)
+        
+        st.markdown(
+            """
+            <h1 style='text-align:center; color:#00BFFF; font-size:40px;'>
+                Customer Churn Prediction 💡
+            </h1>
+            <p style='text-align:center; font-size:18px; color:#B0C4DE;'>
+                Enter customer details below to predict whether they are likely to churn.
+            </p>
+            """,
+            unsafe_allow_html=True
         )
         
-        st.markdown(
-            "<h1 style='text-align: center; color: #2E86C1;'>📈 Customer Churn Prediction System</h1>", 
-              unsafe_allow_html=True
-              )
+        try:
 
-        st.markdown(
-            "<p style='text-align: center; color: gray;'>Enter customer details to predict churn likelihood</p>", 
-            unsafe_allow_html=True
+            predictor = LGBMPredictor(artifacts_dir=artifacts_dir)
+
+            st.success("✅ Successfully Loaded Model")
+        
+        except Exception as e:
+            st.error(f"❌ Error loading model: {str(e)}")
+            st.stop()
+
+        st.markdown("<hr>", unsafe_allow_html=True)
+        st.subheader("🔧 Input Customer Information")
+       
+        col1, col2 = st.columns(2)
+
+        with col1:
+
+
+            senior_citizen = st.selectbox("Senior Citizen", [0, 1])
+            partner = st.selectbox("Partner", [0, 1])
+            dependents = st.selectbox("Dependents", [0, 1])
+
+            tenure = st.number_input("Tenure (months)", min_value=0, max_value=100, value=12)
+            internet_service = st.selectbox("Internet Service", ["DSL", "Fiber optic", "No"])
+            contract = st.selectbox("Contract Type", ["Month-to-month", "One year", "Two year"])
+            paperlessbilling = st.selectbox("Paperless Billing", [0, 1])
+            payment_method = st.selectbox(
+                "Payment Method",
+                ['Mailed check', 'Electronic check', 'Automatic']
             )
-        
-        
-        st.divider()
 
-        with st.form("Churn Form"):
-            col1, col2 = st.columns(2)
-
-
-  
-            with col1:
-                
-                senior_citizen = st.selectbox("Senior Citizen", [0, 1])
-                partner = st.selectbox("Partner", [0, 1])
-                dependents = st.selectbox("Dependents", [0, 1])
-
-                tenure = st.number_input("Tenure (months)", min_value=0, max_value=100, value=12)
-                internet_service = st.selectbox("Internet Service", ["DSL", "Fiber optic", "No"])
-                contract = st.selectbox("Contract Type", ["Month-to-month", "One year", "Two year"])
-                paperlessbilling = st.selectbox("Paperless Billing", [0, 1])
-                payment_method = st.selectbox(
-                    "Payment Method",
-                    ['Mailed check', 'Electronic check', 'Automatic']
-                )
-
-                monthly_charges = st.number_input("Monthly Charges", min_value=0.0)
-                total_charges = st.number_input("Total Charges", min_value=0.0)
+            monthly_charges = st.number_input("Monthly Charges", min_value=0.0)
+            total_charges = st.number_input("Total Charges", min_value=0.0)
             
-            with col2:
-                
-                fibre_stream_pref = st.selectbox("Fibre Stream Pref", [0, 1])
-                dsl_security_pref = st.selectbox("DSL Security Pref", [0, 1])
-                has_phone = st.selectbox("Has Phone", [0, 1])
-                has_multipleline = st.selectbox("Has Multiple Line", [0, 1])
+            fibre_stream_pref = st.selectbox("Fibre Stream Pref", [0, 1])
+            dsl_security_pref = st.selectbox("DSL Security Pref", [0, 1])
+            has_phone = st.selectbox("Has Phone", [0, 1])
+            has_multipleline = st.selectbox("Has Multiple Line", [0, 1])
 
-                
-                tenure_bucket = st.selectbox("Tenure Bucket", ["0-3", "4-12", "13-24", "25-48", "49-72", "72+"])
-                avg_monthly_charge = total_charges / tenure if tenure > 0 else 0.0
-                total_addons = st.number_input("Total Addons", min_value=0, value=1)
-                contract_payment = f"{contract}_{payment_method}"
-                security_bins = st.number_input("Security Addons Bin", min_value=0, value=1, step=1)
-                streaming_bins = st.number_input("Streaming Addons Bin", min_value=0, value=1, step=1)
-                new_customers = 0 if tenure > 3 else 1
-                spend_per_addon = monthly_charges / total_addons if total_addons > 0 else 0.0
+        
+        with col2:
 
-            submitted = st.form_submit_button("🚀 Predict")
-                
-            if submitted:
+            tenure_bucket = st.selectbox("Tenure Bucket", ["0-3", "4-12", "13-24", "25-48", "49-72", "72+"])
+            avg_monthly_charge = total_charges / tenure if tenure > 0 else 0.0
+            total_addons = st.number_input("Total Addons", min_value=0, value=1)
+            contract_payment = f"{contract}_{payment_method}"
+            security_bins = st.number_input("Security Addons Bin", min_value=0, value=1, step=1)
+            streaming_bins = st.number_input("Streaming Addons Bin", min_value=0, value=1, step=1)
+            new_customers = 0 if tenure > 3 else 1
+            spend_per_addon = monthly_charges / total_addons if total_addons > 0 else 0.0
+
+       
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        if st.button("🚀 Predict Churn", use_container_width=True):
+            
+            try:
 
                 inputs = {
 
@@ -111,21 +156,38 @@ def run_app(
 
 
                 preds, probs = predictor.predict_from_dict(inputs)
+                probs = probs[0] * 100
 
-                prediction_label = pred_class[int(preds[0])]
-                probability = float(probs[0])
+                prediction_label = "Customer will likely Stay" if preds[0] == 0 else "Customer will likely Churn"
+                probability = round(float(probs), 2)
+                
+                bg_color = "#228B22" if preds[0] == 0 else "#8B0000"
 
-                st.divider()
-                st.markdown("🔮 Prediction Result")
-                st.metric(label="Prediction", value=prediction_label)
-                st.progress(probability)
-                st.write(f"**Probability Score**: {probability:.2f}")
+                st.markdown(
+
+                    f"""
+                    <div style="background-color:{bg_color}; padding:20px; border-radius:12px; text-align:center;">
+                        <h2 style="color:white;">Prediction: {prediction_label}</h2>
+                        <h4 style="color:white;">Confidence: {probability}%</h4>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
 
 
     
-    except Exception as e:
-        print("Error occurred during streamlit app building as:", str(e))
-        raise e
+            except Exception as e:
+                st.error(f"⚠️ Prediction failed: {str(e)}")
+
+
+st.markdown("<br><hr>", unsafe_allow_html=True)
+st.markdown(
+    "<p style='text-align:center; color:gray;'>© 2025 Customer Churn Predictor | Built with Streamlit</p>",
+    unsafe_allow_html=True
+)
+
+
+
 
 if __name__ == "__main__":
-    run_app(artifacts_dir="models_artifact/")
+    run_app(artifacts_dir="models_artifact")
