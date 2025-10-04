@@ -101,7 +101,7 @@ This command runs ingestion, cleaning, feature engineering, cross-validation, an
 `python -m predict.pipeline`
 
 
-Artifacts such as the final model and metadata will be saved in the artifacts/ directory.
+Artifacts such as the final model and metadata will be saved in the `models_artifacts/` directory.
 
 🎯 Making Predictions
 Using Python

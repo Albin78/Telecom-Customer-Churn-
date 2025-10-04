@@ -44,36 +44,41 @@ def run_app(
         }}
         .css-18e3th9 {{
             background-color: transparent !important;
-        }}
+        }}s
         </style>
         """
 
         st.markdown(page_bg, unsafe_allow_html=True)
 
 
-
-    background_image = os.path.join("dataset", "app_bg.jpg")
+    background_image = os.path.join("dataset", "background.png")
 
     if os.path.exists(background_image):
         set_background(background_image)
         
         st.markdown(
             """
-            <h1 style='text-align:center; color:#00BFFF; font-size:40px;'>
+            <h1 style='text-align:center; color:#D3D3D3; font-size:42px; text-shadow: 2px 2px 8px #000000;'>
                 Customer Churn Prediction 💡
             </h1>
-            <p style='text-align:center; font-size:18px; color:#B0C4DE;'>
-                Enter customer details below to predict whether they are likely to churn.
-            </p>
+            <div style='background-color:rgba(255,255,255,0.1);
+                        border-radius:10px;
+                        padding:10px 20px;
+                        margin:auto;
+                        width:70%;
+                        text-align:center;'>
+                <p style='font-size:18px; color:#00FFFF; font-weight:400; text-shadow:1px 1px 3px #000000;'>
+                    Enter customer details below to predict whether they are likely to churn.
+                </p>
+            </div>
             """,
             unsafe_allow_html=True
-        )
-        
+            
+            )
+
         try:
 
             predictor = LGBMPredictor(artifacts_dir=artifacts_dir)
-
-            st.success("✅ Successfully Loaded Model")
         
         except Exception as e:
             st.error(f"❌ Error loading model: {str(e)}")
@@ -165,13 +170,31 @@ def run_app(
 
                 st.markdown(
 
-                    f"""
-                    <div style="background-color:{bg_color}; padding:20px; border-radius:12px; text-align:center;">
-                        <h2 style="color:white;">Prediction: {prediction_label}</h2>
-                        <h4 style="color:white;">Confidence: {probability}%</h4>
+                  f"""
+                    <div style="
+                        background: linear-gradient(135deg, #0a1931, #185adb);
+                        border-radius: 12px;
+                        padding: 14px 20px;
+                        text-align: center;
+                        box-shadow: 0px 3px 10px rgba(0,0,0,0.3);
+                        margin-top: 20px;
+                        width: 55%;
+                        margin-left: auto;
+                        margin-right: auto;
+                    ">
+                        <h2 style="color: #FFD700; text-shadow: 1px 1px 2px #000; font-size: 26px; margin-bottom: 10px;">
+                            🧠 Prediction Result
+                        </h2>
+                        <h3 style="color: #FFFFFF; font-size: 22px; margin-bottom: 5px;">
+                            {prediction_label}
+                        </h3>
+                        <p style="color: #B0C4DE; font-size: 16px; margin-top: 0;">
+                            Confidence: <b style="color: #00FFCC;">{probability}%</b>
+                        </p>
                     </div>
                     """,
                     unsafe_allow_html=True
+
                 )
 
 
