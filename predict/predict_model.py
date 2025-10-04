@@ -8,7 +8,7 @@ import os
 class LGBMPredictor:
 
     def __init__(
-        self, artificats_dir:str
+        self, artifacts_dir:str
         ):
 
         """Predictor for the inputs using LGBM
@@ -20,7 +20,7 @@ class LGBMPredictor:
     
         """
 
-        self.artifacts_dir = artificats_dir
+        self.artifacts_dir = artifacts_dir
         self.model = self._load_model()
         self.threshold = self._load_threshold()
         self.best_iteration = self._load_iterator()
