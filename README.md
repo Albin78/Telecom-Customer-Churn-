@@ -167,3 +167,11 @@ May show bias towards certain categories if data imbalance exists.
 The threshold tuning may need re-evaluation with new data.
 
 The Streamlit app currently supports only single-record predictions (batch predictions can be added later).
+
+# 👨‍💻 Author
+
+Albin Shabu
+📧 [albinshabu960@gmail.com]
+🔗 LinkedIn: [https://www.linkedin.com/in/albin-shabu-37b2a7250/]
+
+## Data-driven insights for smarter customer retention.
