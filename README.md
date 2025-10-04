@@ -71,7 +71,7 @@ Faster training time
 
 Better handling of feature interactions
 
-🧰 Installation & Setup
+## 🧰 Installation & Setup
 
 ## 1️⃣ Clone the repository
 git clone https://github.com/Albin78/Telecom-Customer-Churn-.git
